@@ -139,6 +139,38 @@ public class IAK {
         return this.HTTP_POST(url, body);
     }
 
+    /**
+     * Inquiry PLN
+     * @return
+     */
+    public Object inquiry_pln(String customer_id) {
+        if(!this.prepaid_access) { try { throw new Exception("Please call prepaid method first!"); } catch (Exception e) { e.printStackTrace(); } }
+        String body = "{\"username\": \"" + this.getNohp() + "\", \"customer_id\": \"" + customer_id + "\", \"sign\": \"" + this.sign(customer_id) + "\"}";
+        return this.HTTP_POST("/api/inquiry-pln", body);
+    }
+
+    /**
+     * Inquiry game id
+     * @param customer_id
+     * @return
+     */
+    public Object inquiry_gameId(String game_code, String customer_id) {
+        if(!this.prepaid_access) { try { throw new Exception("Please call prepaid method first!"); } catch (Exception e) { e.printStackTrace(); } }
+        String body = "{\"username\": \"" + this.getNohp() + "\", \"game_code\": \"" + game_code + "\", \"customer_id\": \"" + customer_id + "\", \"sign\": \"" + this.sign(game_code) + "\"}";
+        return this.HTTP_POST("/api/inquiry-game", body);
+    }
+
+    /**
+     * Inquiry game server
+     * @param game_code
+     * @return
+     */
+    public Object inquiry_gameServer(String game_code) {
+        if(!this.prepaid_access) { try { throw new Exception("Please call prepaid method first!"); } catch (Exception e) { e.printStackTrace(); } }
+        String body = "{\"username\": \"" + this.getNohp() + "\", \"game_code\": \"" + game_code + "\", \"sign\": \"" + this.sign(game_code) + "\"}";
+        return this.HTTP_POST("/api/inquiry-game-server", body);
+    }
+
     // ---------------------------------------------------------------------------------------------------------- //
 
     /**
