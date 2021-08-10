@@ -13,6 +13,10 @@ public class IAK {
 
     /**
      * IAK / Mobilepulsa Java SDK
+     * Bassed on this documentation
+     * https://api.iak.id/docs/reference/ZG9jOjE-introduction
+     *
+     * Contributor : Teguh Rijanandi <teguhrijanandi02@gmail.com>
      */
 
     // ---------------------------------------------------------------------------------------------------------- //
@@ -169,6 +173,20 @@ public class IAK {
         if(!this.prepaid_access) { try { throw new Exception("Please call prepaid method first!"); } catch (Exception e) { e.printStackTrace(); } }
         String body = "{\"username\": \"" + this.getNohp() + "\", \"game_code\": \"" + game_code + "\", \"sign\": \"" + this.sign(game_code) + "\"}";
         return this.HTTP_POST("/api/inquiry-game-server", body);
+    }
+
+    /**
+     * Top up prepaid product
+     * @param ref_id
+     * @param customer_id
+     * @param product_code
+     * @return
+     */
+    public Object topup(String ref_id, String customer_id, String product_code) {
+        if(!this.prepaid_access) { try { throw new Exception("Please call prepaid method first!"); } catch (Exception e) { e.printStackTrace(); } }
+        String body = "{\"commands\": \"topup\", \"username\": \"" + this.getNohp() + "\", \"ref_id\": \"" + ref_id + "\", \"hp\": \"" + customer_id + "\", \"pulsa_code\": \"" + product_code + "\", \"sign\": \"" + this.sign(ref_id) + "\"}";
+        // Pakai API v1 karena saya mencoba pada tanggal 10/08/2021 13:30 gagal, errornya hp required pulsa_code required
+        return this.HTTP_POST("/v1/legacy/index", body);
     }
 
     // ---------------------------------------------------------------------------------------------------------- //
