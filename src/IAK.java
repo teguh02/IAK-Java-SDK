@@ -44,6 +44,9 @@ public class IAK {
     protected String getStage() { return stage; }
     public void setStage(String stage) { this.stage = stage; }
     public String getBASEURL() { return getStage() == "sandbox" ? BASEURL_DEVELOPMENT : BASEURL_PRODUCTION; }
+
+    // ---------------------------------------------------------------------------------------------------------- //
+
     public String sign(String action) {
         String input = this.getNohp() + this.getApikey() + action;
         try {
