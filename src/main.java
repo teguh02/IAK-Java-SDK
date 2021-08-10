@@ -6,6 +6,7 @@ public class main {
         iak.setNohp("089655541804");
         iak.setStage("sandbox");
 
-        System.out.println(iak.prepaid().checkBalance());
+        //System.out.println(iak.prepaid().checkBalance());
+        System.out.println(iak.prepaid().pricelist("pulsa", "three", "all"));
     }
 }

@@ -119,20 +119,24 @@ public class IAK {
     }
 
     /**
-     * Check balance
+     * Prepaid Check balance
      * @return
      */
     public Object checkBalance() {
-        if(!this.prepaid_access) {
-            try {
-                throw new Exception("Please call prepaid method first!");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
+        if(!this.prepaid_access) { try { throw new Exception("Please call prepaid method first!"); } catch (Exception e) { e.printStackTrace(); } }
         String body = "{\"username\": \"" + this.getNohp() + "\", \"sign\": \"" + this.sign("bl") + "\"}";
         return this.HTTP_POST("/api/check-balance", body);
+    }
+
+    /**
+     * Prepaid pricelist
+     * @return
+     */
+    public Object pricelist(String type, String operator, String status) {
+        if(!this.prepaid_access) { try { throw new Exception("Please call prepaid method first!"); } catch (Exception e) { e.printStackTrace(); } }
+        String body = "{\"username\" : \"" + this.getNohp() + "\", \"sign\": \"" + this.sign("pl") + "\", \"status\": \"" + status + "\"}";
+        String url = "/api/pricelist/" + type + "/" + operator;
+        return this.HTTP_POST(url, body);
     }
 
     // ---------------------------------------------------------------------------------------------------------- //
