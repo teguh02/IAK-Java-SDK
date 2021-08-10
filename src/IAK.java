@@ -242,4 +242,66 @@ public class IAK {
         String url = "/api/v1/bill/check/" + type;
         return this.HTTP_POST_POSTPAID(url, body);
     }
+
+    /**
+     * Inquiry postpaid product
+     * @return
+     */
+    public Object inquiry_postpaid(String ref_id, String customer_id, String product_code, String month_for_bpjs_product) {
+        if(!this.postpaid_access) { try { throw new Exception("Please call postpaid method first!"); } catch (Exception e) { e.printStackTrace(); } }
+        String body = null;
+        String url = "/api/v1/bill/check";
+
+        if (month_for_bpjs_product == null) {
+            // Inquiry selain produk BPJS
+            body = "{\"commands\": \"inq-pasca\", \"username\": \"" + this.getNohp() + "\", \"code\": \"" + product_code + "\", \"ref_id\": \"" + ref_id + "\", \"hp\": \"" + customer_id + "\", \"sign\": \"" + this.sign(ref_id) + "\"}";
+
+        } else {
+            // Inquiry produk BPJS
+            body = "{\"commands\": \"inq-pasca\", \"username\": \"" + this.getNohp() + "\", \"code\": \"" + product_code + "\", \"ref_id\": \"" + ref_id + "\", \"hp\": \"" + customer_id + "\", \"sign\": \"" + this.sign(ref_id) + "\", \"month\": \"" + month_for_bpjs_product + "\"}";
+        }
+
+        return this.HTTP_POST_POSTPAID(url, body);
+    }
+
+    /**
+     * Inquiry E-samsat product
+     * @param ref_id
+     * @param customer_id
+     * @param product_code
+     * @return
+     */
+    public Object inquiry_postpaid_esamsat(String ref_id, String customer_id, String product_code, String nomor_identitas) {
+        if(!this.postpaid_access) { try { throw new Exception("Please call postpaid method first!"); } catch (Exception e) { e.printStackTrace(); } }
+        String body = null;
+        String url = "/api/v1/bill/check";
+        body = "{\"commands\": \"inq-pasca\", \"username\": \"" + this.getNohp() + "\", \"code\": \"" + product_code + "\", \"ref_id\": \"" + ref_id + "\", \"hp\": \"" + customer_id + "\", \"sign\": \"" + this.sign(ref_id) + "\", \"nomor_identitas\": \"" + nomor_identitas + "\"}";
+        return this.HTTP_POST_POSTPAID(url, body);
+    }
+
+    /**
+     * To pay inquiry postpaid product
+     * @param tr_id_from_inquiry
+     * @return
+     */
+    public Object pay_postpaid_inquiry(String tr_id_from_inquiry) {
+        if(!this.postpaid_access) { try { throw new Exception("Please call postpaid method first!"); } catch (Exception e) { e.printStackTrace(); } }
+        String body = null;
+        String url = "/api/v1/bill/check";
+        body = "{\"commands\": \"pay-pasca\", \"username\": \"" + this.getNohp() + "\", \"tr_id\": \"" + tr_id_from_inquiry + "\", \"sign\": \"" + this.sign(tr_id_from_inquiry) + "\"}";
+        return this.HTTP_POST_POSTPAID(url, body);
+    }
+
+    /**
+     * To check payment status
+     * @param ref_id
+     * @return
+     */
+    public Object check_status_postpaid_payment(String ref_id) {
+        if(!this.postpaid_access) { try { throw new Exception("Please call postpaid method first!"); } catch (Exception e) { e.printStackTrace(); } }
+        String body = null;
+        String url = "/api/v1/bill/check";
+        body = "{\"commands\": \"checkstatus\", \"username\": \"" + this.getNohp() + "\", \"ref_id\": \"" + ref_id + "\", \"sign\": \"" + this.sign("cs") + "\"}";
+        return this.HTTP_POST_POSTPAID(url, body);
+    }
 }
