@@ -189,6 +189,17 @@ public class IAK {
         return this.HTTP_POST("/v1/legacy/index", body);
     }
 
+    /**
+     * Check prepaid transaction
+     * @param ref_id
+     * @return
+     */
+    public Object check_status(String ref_id) {
+        if(!this.prepaid_access) { try { throw new Exception("Please call prepaid method first!"); } catch (Exception e) { e.printStackTrace(); } }
+        String body = "{\"username\": \"" + this.getNohp() + "\", \"ref_id\": \"" + ref_id + "\", \"sign\": \"" + this.sign(ref_id) + "\"}";
+        return this.HTTP_POST("/api/check-status", body);
+    }
+
     // ---------------------------------------------------------------------------------------------------------- //
 
     /**

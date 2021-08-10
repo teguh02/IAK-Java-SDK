@@ -41,6 +41,8 @@ public class main {
         // https://api.iak.id/docs/reference/ZG9jOjEyNjIwNjc2-top-up
         //System.out.println(iak.prepaid().topup("orderNum31", "0896512435", "hthree1000"));
 
-
+        // 7. Check prepaid transactions
+        // https://api.iak.id/docs/reference/ZG9jOjEyNjIwNjU0-check-status
+        System.out.println(iak.prepaid().check_status("orderNum31"));
     }
 }
