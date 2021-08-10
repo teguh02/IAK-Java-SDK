@@ -28,6 +28,9 @@ public class IAK {
     protected String BASEURL_PRODUCTION = "https://prepaid.iak.id";
     protected String BASEURL_DEVELOPMENT ="https://prepaid.iak.dev";
 
+    protected String BASEURL_PRODUCTION_POSTPAID = "https://mobilepulsa.net";
+    protected String BASEURL_DEVELOPMENT_POSTPAID ="https://testpostpaid.mobilepulsa.net";
+
     protected Boolean prepaid_access = false;
     protected Boolean postpaid_access = false;
 
@@ -67,47 +70,56 @@ public class IAK {
             throw new RuntimeException(e);
         }
     }
-    protected String HTTP_POST(String request_url, String body) {
+
+    // ---------------------------------------------------------------------------------------------------------- //
+
+    protected Object HTTP_POST(String request_url, String body) {
         String baseurl;
         StringBuilder response = new StringBuilder();
-
         try {
-
-            if (this.getStage() == "sandbox") {
-                baseurl = BASEURL_DEVELOPMENT + request_url;
-            } else {
-                baseurl = BASEURL_PRODUCTION + request_url;
-            }
-
+            String jsonInputString = body;
+            if (this.getStage() == "sandbox") { baseurl = BASEURL_DEVELOPMENT + request_url; } else { baseurl = BASEURL_PRODUCTION + request_url; }
             URL url = new URL (baseurl);
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
             con.setRequestMethod("POST");
+            con.setConnectTimeout(5000);
             con.setRequestProperty("Content-Type", "application/json; utf-8");
             con.setRequestProperty("Accept", "application/json");
+            con.setDoInput(true);
             con.setDoOutput(true);
-
-            String jsonInputString = body;
-            try(OutputStream os = con.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
-
-            try(BufferedReader br = new BufferedReader(
-                    new InputStreamReader(con.getInputStream(), "utf-8"))) {
-                String responseLine = null;
-                while ((responseLine = br.readLine()) != null) {
-                    response.append(responseLine.trim());
-                }
-
-                //return response.toString();
-            }
-
+            try(OutputStream os = con.getOutputStream()) { byte[] input = jsonInputString.getBytes("utf-8");os.write(input, 0, input.length); }
+            try(BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"))) { String responseLine = null;while ((responseLine = br.readLine()) != null) { response.append(responseLine.trim()); } }
+            con.disconnect();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        return response.toString();
+    }
+    protected Object HTTP_POST_POSTPAID(String request_url, String body) {
+        String baseurl;
+        StringBuilder response = new StringBuilder();
+        if (this.getStage() == "sandbox") { baseurl = BASEURL_DEVELOPMENT_POSTPAID + request_url; } else { baseurl = BASEURL_PRODUCTION_POSTPAID + request_url;}
+        try {
+            String input = body;
+            String output;
+            URL url = new URL(baseurl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            OutputStream os = conn.getOutputStream();
+            os.write(input.getBytes());
+            os.flush();
+            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+            while ((output = br.readLine()) != null) { response.append(output.trim()); }
+            conn.disconnect();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return response.toString();
     }
 
@@ -209,5 +221,25 @@ public class IAK {
     public IAK postpaid() {
         this.postpaid_access = true;
         return this;
+    }
+
+    /**
+     * Pricelist postpaid
+     * @param type
+     * @param status
+     * @return
+     */
+    public Object pricelist_postpaid(String type, String status, String province_for_pdam) {
+        if(!this.postpaid_access) { try { throw new Exception("Please call postpaid method first!"); } catch (Exception e) { e.printStackTrace(); } }
+        String body = null;
+
+        if(province_for_pdam != null) {
+            body = "{\"username\": \"" + this.getNohp() + "\", \"commands\": \"pricelist-pasca\", \"status\": \"" + status + "\", \"province\": \"" + province_for_pdam + "\", \"sign\": \"" + this.sign("pl") + "\"}";
+        } else {
+            body = "{\"commands\": \"pricelist-pasca\", \"username\": \"" + this.getNohp() + "\", \"status\": \"" + status + "\", \"sign\": \"" + this.sign("pl") + "\"}";
+        }
+
+        String url = "/api/v1/bill/check/" + type;
+        return this.HTTP_POST_POSTPAID(url, body);
     }
 }

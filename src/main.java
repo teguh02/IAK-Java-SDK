@@ -43,6 +43,14 @@ public class main {
 
         // 7. Check prepaid transactions
         // https://api.iak.id/docs/reference/ZG9jOjEyNjIwNjU0-check-status
-        System.out.println(iak.prepaid().check_status("orderNum31"));
+        //System.out.println(iak.prepaid().check_status("orderNum31"));
+
+        // B. Postpaid
+
+        // 1. Pricelist
+        // https://api.iak.id/docs/reference/ZG9jOjEyNjIwNjQy-pricelist
+        //System.out.println(iak.postpaid().pricelist_postpaid("pdam", "active", null));
+        //System.out.println(iak.postpaid().pricelist_postpaid("pdam", "active", "Jakarta"));
+        //System.out.println(iak.postpaid().pricelist_postpaid("pdam", "active", "Jawa Tengah"));
     }
 }
