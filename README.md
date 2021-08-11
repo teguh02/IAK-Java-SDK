@@ -27,8 +27,8 @@ public class main {
         IAK iak = new IAK();
 
         // Set Apikey, noHp (username), and stage environment here
-        iak.setApikey("1195eaba63dc90ee");
-        iak.setNohp("089655541804");
+        iak.setApikey("your_apikey");
+        iak.setNohp("your_registered_phone_number_in_iak");
         iak.setStage("sandbox");
 
         // ---------------------------------------------------------------------------------------------------------- //
